@@ -1,9 +1,15 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import Shelf from "./Shelf"
 import './App.css'
 
 class BooksApp extends React.Component {
+  SHELFS = [
+    {title:"Currently Reading", searchId:"currentlyReading"}, 
+    {title:"Want To Read", searchId:"wantToRead"}, 
+    {title:"Read", searchId:"read"}
+  ]
+
   state = {
     /**
      * TODO: Instead of using this state variable to keep track of which page
@@ -11,7 +17,17 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false
+    showSearchPage: false,
+
+    books: []
+  }
+
+  componentDidMount(){
+    BooksAPI.getAll().then(books=>this.setState({books}))
+  }
+
+  getBooksByShelf(shelf){
+    return this.state.books.filter(b=> b.shelf === shelf)
   }
 
   render() {
@@ -45,30 +61,10 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <Shelf 
-                  title="Currently Reading"
-                  books= {[
-                    {id:1, name:'To Kill a Mockingbird', authors:'Harper Lee', imageLinks:{thumbnail:'url("http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api")'}},
-                    {id:2, name:'Enders Game', authors:'Orson Scott Card', imageLinks:{thumbnail:'url("http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api")'}}
-                  ]}
-                />
-                <Shelf 
-                  title="Want to Read"
-                  books= {[
-                    {id:1, name:'To Kill a Mockingbird', authors:'Harper Lee', imageLinks:{thumbnail:'url("http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api")'}},
-                    {id:2, name:'Enders Game', authors:'Orson Scott Card', imageLinks:{thumbnail:'url("http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api")'}}
-                  ]}
-                />
-                <Shelf 
-                  title="Read"
-                  books= {[
-                    {id:1, name:'To Kill a Mockingbird', authors:'Harper Lee', imageLinks:{thumbnail:'url("http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api")'}},
-                    {id:2, name:'Enders Game', authors:'Orson Scott Card', imageLinks:{thumbnail:'url("http://books.google.com/books/content?id=yDtCuFHXbAYC&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE72RRiTR6U5OUg3IY_LpHTL2NztVWAuZYNFE8dUuC0VlYabeyegLzpAnDPeWxE6RHi0C2ehrR9Gv20LH2dtjpbcUcs8YnH5VCCAH0Y2ICaKOTvrZTCObQbsfp4UbDqQyGISCZfGN&source=gbs_api")'}}
-                  ]}
-                />
+                {this.SHELFS.map(s =><Shelf title={s.title} books={this.getBooksByShelf(s.searchId)}/>)}
               </div>
             </div>
-            
+
             <div className="open-search">
               <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
             </div>
