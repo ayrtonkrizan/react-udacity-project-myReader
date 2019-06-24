@@ -2,7 +2,6 @@
 
 This application is a bookshelf to store books and track what you are reading, it was built using React for the Udacity React Nanodegree Program.
 
-You can use it here: https://ayrtonkrizan.github.io/react-udacity-project-myReader/
 
 ## How to run the Project
 
