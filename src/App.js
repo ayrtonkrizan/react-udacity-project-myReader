@@ -6,6 +6,7 @@ import Search from "./Search"
 import './App.css'
 
 class BooksApp extends React.Component {
+  /** Constant to control Shelfs **/
   SHELFS = [
     { id: 1, title: "Currently Reading", searchId: "currentlyReading" },
     { id: 2, title: "Want To Read", searchId: "wantToRead" },
@@ -13,14 +14,6 @@ class BooksApp extends React.Component {
   ]
 
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
-
     books: []
   }
 
@@ -28,10 +21,21 @@ class BooksApp extends React.Component {
     BooksAPI.getAll().then(books => this.setState({ books }))
   }
 
+  /* Function to filter books sate by shelf */
   getBooksByShelf(shelf) {
     return this.state.books.filter(b => b.shelf === shelf)
   }
-  /*<Search event={()=> this.setState({ showSearchPage: false })}/>*/
+
+  changeShelf = (book, newShelf) => {
+    BooksAPI.update(book, newShelf).then(() => {
+      book.shelf = newShelf;
+
+      this.setState(state => ({
+        books: state.books.filter(b => b.id !== book.id).concat([book])
+      }));
+    });
+  }
+
   render() {
     return (
       <div className="app">
@@ -42,7 +46,7 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                {this.SHELFS.map(s => <Shelf key={s.id} title={s.title} books={this.getBooksByShelf(s.searchId)} />)}
+                {this.SHELFS.map(s => <Shelf key={s.id} title={s.title} books={this.getBooksByShelf(s.searchId)} changeShelf={this.changeShelf}/>)}
               </div>
             </div>
 
@@ -52,7 +56,7 @@ class BooksApp extends React.Component {
           </div>
         )} />
         <Route path="/search" render={({ history }) => (
-          <Search event={() => this.setState({ showSearchPage: false })} />
+          <Search APIsearch={BooksAPI.search} books={this.state.books} changeShelf={this.changeShelf}/>
         )} />
       </div>
     )
