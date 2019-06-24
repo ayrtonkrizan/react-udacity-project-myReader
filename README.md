@@ -1,6 +1,8 @@
 # My Reader Project
 
-This application is a bookshelf to store books and track what you are reading, it was built using React for the Udacity React Nanodegree Program.
+This application is a bookshelf to store books that you are currently reading, want to read or you have read.
+
+This project was built using React for the Udacity React Nanodegree Program.
 
 
 ## How to run the Project
